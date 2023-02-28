@@ -54,11 +54,11 @@ services:
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:password@postgres:5432/postgres
     command: hasura-cli console
       --no-browser
-      --endpoint http://graphql-engine:8080
       --admin-secret adminsecret
       --address 0.0.0.0
       --console-port 9695
       --api-port 9693
+      --endpoint ${GQL_ENDPOINT}
       --console-hge-endpoint ${GQL_ENDPOINT_CONSOLE}
     depends_on:
       postgres:
