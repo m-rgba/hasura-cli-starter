@@ -47,7 +47,7 @@ services:
     container_name: hcli_console
     ports:
       - '9695:9695'
-      - '9693:9693'
+      - '${API_PORT}:${API_PORT}'
     volumes:
       - ./hasura:/hasura
     working_dir: /hasura
@@ -58,7 +58,7 @@ services:
       --admin-secret adminsecret
       --address 0.0.0.0
       --console-port 9695
-      --api-port 9693
+      --api-port ${API_PORT}
       --api-host ${API_HOST}
       --endpoint ${GQL_ENDPOINT}
       --console-hge-endpoint ${GQL_ENDPOINT_CONSOLE}
