@@ -1,12 +1,13 @@
 tasks:
   - init: |
-      GQL_ENDPOINT_CONSOLE="https://8080-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}" docker-compose up
+      API_HOST="https://9693-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}" GQL_ENDPOINT_CONSOLE="https://8080-${GITPOD_WORKSPACE_ID}.${GITPOD_WORKSPACE_CLUSTER_HOST}" docker-compose up
 
 ports:
   - port: 8080
     visibility: public
     onOpen: ignore
   - port: 9693
+    visibility: public
     onOpen: ignore
   - port: 9695
     onOpen: open-preview

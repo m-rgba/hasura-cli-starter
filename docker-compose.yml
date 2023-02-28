@@ -25,6 +25,7 @@ services:
       - ./hasura/migrations:/hasura-migrations
       - ./hasura/metadata:/hasura-metadata
     environment:
+      HASURA_GRAPHQL_CORS_DOMAIN: '*' # Allow all domains for development
       HASURA_GRAPHQL_ENABLE_CONSOLE: 'false'
       HASURA_GRAPHQL_DATABASE_URL: postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DATABASE}
       HASURA_GRAPHQL_ADMIN_SECRET: ${GQL_ADMIN_SECRET}
@@ -58,6 +59,7 @@ services:
       --address 0.0.0.0
       --console-port 9695
       --api-port 9693
+      --api-host ${API_HOST}
       --endpoint ${GQL_ENDPOINT}
       --console-hge-endpoint ${GQL_ENDPOINT_CONSOLE}
     depends_on:
