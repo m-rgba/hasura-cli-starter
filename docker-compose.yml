@@ -1,0 +1,67 @@
+version: '3.9'
+services:
+  # Sample database
+  postgres:
+    image: postgres:14.2
+    container_name: hcli_postgres
+    environment:
+      POSTGRES_DB: 'postgres'
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'password'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Hasura GraphQL Engine
+  ## Loads data from migrations to Postgres database [from `./hasura/migrations`]
+  ## >> Initial seed database data is found in migrations folder.
+  ## Loads metadata from metadata to Hasura server [from `./hasura/metadata`]
+  graphql-engine:
+    image: hasura/graphql-engine:v2.19.0.cli-migrations-v3
+    container_name: hcli_server
+    volumes:
+      - ./hasura/migrations:/hasura-migrations
+      - ./hasura/metadata:/hasura-metadata
+    environment:
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false'
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:password@postgres:5432/postgres
+      HASURA_GRAPHQL_ADMIN_SECRET: adminsecret
+    ports:
+      - '8080:8080'
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Control GUI for Hasura
+  ## As changes are made from UI they will be saved to mounted `./hasura` project.
+  hasura-cli:
+    image: hasura/graphql-engine:v2.19.0.cli-migrations-v3
+    container_name: hcli_console
+    ports:
+      - '9695:9695'
+      - '9693:9693'
+    volumes:
+      - ./hasura:/hasura
+    working_dir: /hasura
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:password@postgres:5432/postgres
+    command: hasura-cli console
+      --no-browser
+      --endpoint http://graphql-engine:8080
+      --admin-secret adminsecret
+      --address 0.0.0.0
+      --console-port 9695
+      --api-port 9693
+      --console-hge-endpoint http://localhost:8080
+    depends_on:
+      postgres:
+        condition: service_healthy
+      graphql-engine:
+        condition: service_healthy
