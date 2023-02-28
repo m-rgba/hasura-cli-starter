@@ -1,8 +1,6 @@
-tasks:
-  - init: |
-    GQL_ENDPOINT_CONSOLE="https://8080-${GITPOD_WORKSPACE_URL}" docker-compose convert
-  - command: |
-    GQL_ENDPOINT_CONSOLE="https://8080-${GITPOD_WORKSPACE_URL}" docker-compose up
+# tasks:
+#   - init: |
+#     GQL_ENDPOINT_CONSOLE="https://8080-${GITPOD_WORKSPACE_URL}" docker-compose convert
 
 ports:
   - port: 8080
