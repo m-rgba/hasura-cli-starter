@@ -4,6 +4,7 @@ tasks:
 
 ports:
   - port: 8080
+    visibility: public
     onOpen: ignore
   - port: 9693
     onOpen: ignore
