@@ -5,9 +5,9 @@ services:
     image: postgres:14.2
     container_name: hcli_postgres
     environment:
-      POSTGRES_DB: 'postgres'
-      POSTGRES_USER: 'postgres'
-      POSTGRES_PASSWORD: 'password'
+      POSTGRES_DB: '${PG_DATABASE}'
+      POSTGRES_USER: '${PG_USER}'
+      POSTGRES_PASSWORD: '${PG_PASSWORD}'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
       interval: 10s
@@ -26,8 +26,8 @@ services:
       - ./hasura/metadata:/hasura-metadata
     environment:
       HASURA_GRAPHQL_ENABLE_CONSOLE: 'false'
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:password@postgres:5432/postgres
-      HASURA_GRAPHQL_ADMIN_SECRET: adminsecret
+      HASURA_GRAPHQL_DATABASE_URL: postgres://${PG_USER}:${PG_PASSWORD}@postgres:5432/${PG_DATABASE}
+      HASURA_GRAPHQL_ADMIN_SECRET: ${GQL_ADMIN_SECRET}
     ports:
       - '8080:8080'
     depends_on:
@@ -59,7 +59,7 @@ services:
       --address 0.0.0.0
       --console-port 9695
       --api-port 9693
-      --console-hge-endpoint http://localhost:8080
+      --console-hge-endpoint ${GQL_ENDPOINT_CONSOLE}
     depends_on:
       postgres:
         condition: service_healthy

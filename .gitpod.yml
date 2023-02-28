@@ -1,8 +1,6 @@
 tasks:
   - init: |
-      docker-compose pull
-  - command: |
-      docker-compose up
+      GQL_ENDPOINT_CONSOLE=https://8080-${GITPOD_WORKSPACE_URL} docker-compose up
 
 ports:
   - port: 8080
